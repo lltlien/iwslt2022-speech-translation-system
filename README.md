@@ -19,20 +19,12 @@ Set the environment variables:
 
 ```bash
 export IWSLT_ROOT=...                          # where to clone this repo
-export FAIRSEQ_ROOT=...                        # where to clone fairseq
 ```
 
 Clone this repository to `$IWSLT_ROOT`:
 
 ```bash
 git clone --recursive https://github.com/lltlien/iwslt2022-speech-translation-system.git ${IWSLT_ROOT}
-```
-If cloning submodule `fairseq` fail, try:
-```bash
-git clone https://github.com/mt-upc/iwslt-2022.git ${IWSLT_ROOT}
-cd ${IWSLT_ROOT}
-git submodule init
-git submodule update
 ```
 
 Install Miniconda:
@@ -52,6 +44,9 @@ Create a conda environment using the `environment.yml` file, activate it and ins
 conda env create -f ${IWSLT_ROOT}/environment.yml && \
 conda activate iwslt22 && \
 pip install --editable ${IWSLT_ROOT}/fairseq/
+pip install jiwer bitarray
+pip install omegaconf hydra-core
+pip install torch==1.11.0+cu115 torchaudio==0.11.0+cu115 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
 Install NVIDIA's [apex](https://github.com/NVIDIA/apex) library for faster training with fp16 precision:
@@ -98,7 +93,7 @@ Set the data environment variables:
 export MUSTC_ROOT=...           # where to download MuST-C v2                  
 ```
 Download MuST-C v2 en-pt to `$MUSTC_ROOT`:\
-The dataset is available [here](https://ict.fbk.eu/must-c/). 
+The dataset is available [here](https://mt.fbk.eu/must-c-release-v1-0/). 
 
 ### Data Preparation
 
@@ -110,8 +105,6 @@ We only prepare the tsvs and do not learn a vocabulary since we will reuse the o
 ```bash
 # PYTHONPATH
 export PYTHONPATH=/home/your_path/fairseq:/home/your_path:$PYTHONPATH
-pip install omegaconf hydra-core
-pip install torch==1.11.0+cu115 torchaudio==0.11.0+cu115 -f https://download.pytorch.org/whl/torch_stable.html
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 export PATH=/usr/local/cuda/bin:$PATH
 ```
@@ -129,7 +122,6 @@ Do ASR inference on the "train" sets using a pre-trained wav2vec 2.0 model and s
 
 ```bash
 export FILTER_ROOT=...
-pip install jiwer bitarray
 
 # MuST-C
 # add batch_size if you dont have gpu
